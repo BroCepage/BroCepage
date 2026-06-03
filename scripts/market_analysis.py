@@ -264,6 +264,8 @@ def send_telegram(token: str, chat_id: str, text: str) -> None:
         json={"chat_id": chat_id, "text": text, "parse_mode": "Markdown"},
         timeout=30,
     )
+    if not resp.ok:
+        print(f"Telegram API error {resp.status_code}: {resp.text}", file=sys.stderr)
     resp.raise_for_status()
 
 
