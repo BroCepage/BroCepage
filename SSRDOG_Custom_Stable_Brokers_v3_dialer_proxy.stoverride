@@ -1,0 +1,715 @@
+# SSRDOG Custom Stable Override
+# 用法：把机场订阅作为主配置；把本文件作为 Stash Override 启用。
+# 目的：订阅更新时只更新 proxies 节点；本地自定义 DNS、策略组、链式代理、规则不被覆盖。
+# 注意：proxy-groups / rule-providers / rules 使用 #!replace，避免订阅自带分组/规则与本地规则冲突。
+
+name: SSRDOG Custom Stable Override
+desc: 保留自定义分流、规则、券商分流与 DNS；链式代理由 relay 改为 dialer-proxy。
+author: Generated for Adziol
+date: '2026-06-25'
+version: 1.3.0
+mixed-port: 7890
+allow-lan: true
+bind-address: '*'
+mode: rule
+log-level: info
+ipv6: false
+unified-delay: true
+
+profile: #!replace
+  store-selected: true
+  tracing: false
+  store-fake-ip: false
+
+hosts: #!replace
+  localhost.localhost: 127.0.0.1
+
+dns: #!replace
+  enable: true
+  ipv6: false
+  listen: 0.0.0.0:1053
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  default-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  proxy-server-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  nameserver:
+  - 223.5.5.5
+  - 223.6.6.6
+  - 119.29.29.29
+  fallback:
+  - 1.1.1.1
+  - 8.8.8.8
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+    - 240.0.0.0/4
+  fake-ip-filter:
+  - '*.lan'
+  - '*.local'
+  - localhost.ptlogin2.qq.com
+  - dns.msftncsi.com
+  - '*.msftconnecttest.com'
+  - '*.msftncsi.com'
+  - '*.srv.nintendo.net'
+  - '*.stun.playstation.net'
+  - xbox.*.microsoft.com
+  - '*.xboxlive.com'
+  - time.windows.com
+  - pool.ntp.org
+  - '*.snssdk.com'
+  - '*.toutiao.com'
+  - '*.ixigua.com'
+  - '*.pstatp.com'
+  - '*.byteimg.com'
+  - '*.bytedance.com'
+  - '*.douyin.com'
+  - '*.amemv.com'
+  - '*.zijieapi.com'
+  - '*.bdurl.net'
+
+# 这里不要放订阅节点，只放你自己的固定 SOCKS5 与 dialer-proxy 包装节点；订阅里的机场节点继续由主配置更新。
+proxies:
+  # 原始 SOCKS5，仅保留备用，不建议直接分流使用。
+  - name: US-SOCKS5-Raw
+    type: socks5
+    server: 64.32.187.244
+    port: 443
+    username: QsAGnasbSCym
+    password: RhK3h9xxi2
+    udp: true
+    benchmark-disabled: true
+
+  # dialer-proxy 链式代理：通过 SSRDOG 先连接到 SOCKS5，再由 SOCKS5 访问目标网站。
+  # 实际链路：App -> US-SOCKS5-via-SSRDOG -> SSRDOG -> US-SOCKS5-Raw -> 目标网站
+  - name: US-SOCKS5-via-SSRDOG
+    type: socks5
+    server: 64.32.187.244
+    port: 443
+    username: QsAGnasbSCym
+    password: RhK3h9xxi2
+    udp: true
+    dialer-proxy: SSRDOG
+    benchmark-disabled: false
+
+proxy-groups: #!replace
+  - name: 🇭🇰 Hong Kong
+    type: select
+    include-all: true
+    filter: 🇭🇰|Hong Kong|HongKong|香港|HK
+  - name: 🇨🇳 Taiwan
+    type: select
+    include-all: true
+    filter: 🇨🇳 Taiwan|🇹🇼|Taiwan|台湾|臺灣|TW
+  - name: 🇯🇵 Japan
+    type: select
+    include-all: true
+    filter: 🇯🇵|Japan|日本|JP
+  - name: 🇰🇷 Korea
+    type: select
+    include-all: true
+    filter: 🇰🇷|Korea|South Korea|韩国|韓國|KR
+  - name: 🇸🇬 Singapore
+    type: select
+    include-all: true
+    filter: 🇸🇬|Singapore|新加坡|SG
+  - name: 🇺🇸 United States
+    type: select
+    include-all: true
+    filter: 🇺🇸|United States|UnitedStates|USA|America|美国|美國
+  - name: 🇨🇦 Canada
+    type: select
+    include-all: true
+    filter: 🇨🇦|Canada|加拿大
+  - name: 🇬🇧 Great Britain
+    type: select
+    include-all: true
+    filter: 🇬🇧|Great Britain|United Kingdom|UK|Britain|英国|英國
+  - name: 🇹🇷 Turkey
+    type: select
+    include-all: true
+    filter: 🇹🇷|Turkey|Türkiye|土耳其
+  - name: 🇳🇱 Netherlands
+    type: select
+    include-all: true
+    filter: 🇳🇱|Netherlands|Holland|荷兰|荷蘭
+  - name: 🇫🇷 France
+    type: select
+    include-all: true
+    filter: 🇫🇷|France|法国|法國
+  - name: 🇩🇪 Germany
+    type: select
+    include-all: true
+    filter: 🇩🇪|Germany|德国|德國
+  - name: 🇻🇳 Vietnam
+    type: select
+    include-all: true
+    filter: 🇻🇳|Vietnam|越南
+  - name: 🇲🇾 Malaysia
+    type: select
+    include-all: true
+    filter: 🇲🇾|Malaysia|马来西亚|馬來西亞
+  - name: 🇹🇭 Thailand
+    type: select
+    include-all: true
+    filter: 🇹🇭|Thailand|泰国|泰國
+  - name: 🇵🇭 Philippines
+    type: select
+    include-all: true
+    filter: 🇵🇭|Philippines|菲律宾|菲律賓
+  - name: ♻️ Taiwan Auto
+    type: url-test
+    include-all: true
+    filter: 🇨🇳 Taiwan|🇹🇼|Taiwan|台湾|臺灣|TW
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+  - name: Europe Auto
+    type: fallback
+    proxies:
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇳🇱 Netherlands
+    - 🇬🇧 Great Britain
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+  - name: Auto
+    type: fallback
+    proxies:
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+  - name: SSRDOG
+    type: select
+    proxies:
+    - Auto
+    - DIRECT
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: 🔗 US-Static-Chain
+    type: select
+    proxies:
+    - US-SOCKS5-via-SSRDOG
+  - name: 📈 Firstrade
+    type: select
+    proxies:
+    - 🇺🇸 United States
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🔗 US-Static-Chain
+  - name: 🏦 Schwab
+    type: select
+    proxies:
+    - 🔗 US-Static-Chain
+    - 🇺🇸 United States
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+  - name: 📈 券商
+    type: select
+    proxies:
+    - 📈 Firstrade
+    - 🏦 Schwab
+    - 🇺🇸 United States
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🔗 US-Static-Chain
+  - name: Apple
+    type: select
+    proxies:
+    - DIRECT
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: BiliBili
+    type: select
+    proxies:
+    - DIRECT
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+  - name: Disney
+    type: select
+    proxies:
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: Google
+    type: select
+    proxies:
+    - 🔗 US-Static-Chain
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: HBO
+    type: select
+    proxies:
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: Microsoft
+    type: select
+    proxies:
+    - SSRDOG
+    - DIRECT
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: Netflix
+    type: select
+    proxies:
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: OpenAI
+    type: select
+    proxies:
+    - 🔗 US-Static-Chain
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇺🇸 United States
+    - 🇯🇵 Japan
+    - 🇸🇬 Singapore
+  - name: HSBC UK
+    type: select
+    proxies:
+    - 🇬🇧 Great Britain
+    - Europe Auto
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇳🇱 Netherlands
+    - SSRDOG
+    - DIRECT
+  - name: PayPal
+    type: select
+    proxies:
+    - DIRECT
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: 🪙 Crypto
+    type: select
+    proxies:
+    - ♻️ Taiwan Auto
+    - 🇨🇳 Taiwan
+    - SSRDOG
+    - DIRECT
+  - name: N26
+    type: select
+    proxies:
+    - 🇫🇷 France
+    - Europe Auto
+    - 🇩🇪 Germany
+    - 🇳🇱 Netherlands
+    - 🇬🇧 Great Britain
+    - SSRDOG
+  - name: Steam
+    type: select
+    proxies:
+    - DIRECT
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: Telegram
+    type: select
+    proxies:
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+  - name: TikTok
+    type: select
+    proxies:
+    - SSRDOG
+    - 🇭🇰 Hong Kong
+    - 🇨🇳 Taiwan
+    - 🇯🇵 Japan
+    - 🇰🇷 Korea
+    - 🇸🇬 Singapore
+    - 🇺🇸 United States
+    - 🇨🇦 Canada
+    - 🇬🇧 Great Britain
+    - 🇹🇷 Turkey
+    - 🇳🇱 Netherlands
+    - 🇫🇷 France
+    - 🇩🇪 Germany
+    - 🇻🇳 Vietnam
+    - 🇲🇾 Malaysia
+    - 🇹🇭 Thailand
+    - 🇵🇭 Philippines
+
+rule-providers: #!replace
+  Apple:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/A.yml
+    interval: 86400
+    path: ./ruleset/Apple.yml
+  BiliBili:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/B.yml
+    interval: 86400
+    path: ./ruleset/BiliBili.yml
+  Disney:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/D.yml
+    interval: 86400
+    path: ./ruleset/Disney.yml
+  Netflix:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/N.yml
+    interval: 86400
+    path: ./ruleset/Netflix.yml
+  TikTok:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/Ti.yml
+    interval: 86400
+    path: ./ruleset/TikTok.yml
+  PayPal:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/P.yml
+    interval: 86400
+    path: ./ruleset/PayPal.yml
+  Google:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/G.yml
+    interval: 86400
+    path: ./ruleset/Google.yml
+  YouTube:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/Y.yml
+    interval: 86400
+    path: ./ruleset/YouTube.yml
+  Microsoft:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/M.yml
+    interval: 86400
+    path: ./ruleset/Microsoft.yml
+  Telegram:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/T.yml
+    interval: 86400
+    path: ./ruleset/Telegram.yml
+  Steam:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/S.yml
+    interval: 86400
+    path: ./ruleset/Steam.yml
+  SteamCN:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/SC.yml
+    interval: 86400
+    path: ./ruleset/SteamCN.yml
+  Bahamut:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/Ba.yml
+    interval: 86400
+    path: ./ruleset/Bahamut.yml
+  DMM:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/DM.yml
+    interval: 86400
+    path: ./ruleset/DMM.yml
+  ChinaMax:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/C.yml
+    interval: 86400
+    path: ./ruleset/ChinaMax.yml
+  OpenAI:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/CH.yml
+    interval: 86400
+    path: ./ruleset/OpenAI.yml
+  HBO:
+    type: http
+    behavior: classical
+    url: https://api-gz.hosbbq.com/nus74f89st1/H.yml
+    interval: 86400
+    path: ./ruleset/HBO.yml
+
+rules: #!replace
+  - DOMAIN,dog.ssrdog.com,SSRDOG
+  - DOMAIN-SUFFIX,zhenkaixin.uk,DIRECT
+  - DOMAIN,ic.adobe.io,REJECT
+  - DOMAIN,dyzt55url8.adobe.io,REJECT
+  - DOMAIN,gw8gfjbs05.adobe.io,REJECT
+  - DOMAIN,0mo5a70cqa.adobe.io,REJECT
+  - DOMAIN,ij0gdyrfka.adobe.io,REJECT
+  - DOMAIN,dxyeyf6ecy.adobe.io,REJECT
+  - DOMAIN,1hzopx6nz7.adobe.io,REJECT
+  - DOMAIN,ph0f2h2csf.adobe.io,REJECT
+  - DOMAIN,23ynjitwt5.adobe.io,REJECT
+  - DOMAIN,crs.cr.adobe.com,REJECT
+  - DOMAIN,www.photoshop.com,REJECT
+  - DOMAIN,cc-cdn.adobe.com,REJECT
+  - DOMAIN,photos.adobe.io,REJECT
+  - DOMAIN,cc-api-data.adobe.io,REJECT
+  - DOMAIN,lcs-cops.adobe.io,REJECT
+  - DOMAIN,cai-splunk-proxy.adobe.io,REJECT
+  - DOMAIN-KEYWORD,sjtu.edu.cn,DIRECT
+  - DOMAIN-KEYWORD,linkedin,SSRDOG
+  # 券商 / Brokers：分开 Firstrade 与 Schwab。Firstrade 默认避开链式代理，Schwab 保留链式优先。
+  # Firstrade 走 📈 Firstrade，默认优先美国/台湾/日本普通节点，链式代理放最后备用。
+  - DOMAIN-KEYWORD,firstrade,📈 Firstrade
+  - DOMAIN-SUFFIX,firstrade.com,📈 Firstrade
+  - DOMAIN-SUFFIX,firstrade.com.tw,📈 Firstrade
+  - DOMAIN-SUFFIX,apexclearing.com,📈 Firstrade
+  - DOMAIN-SUFFIX,apexfintechsolutions.com,📈 Firstrade
+  # Charles Schwab / thinkorswim 走 🏦 Schwab，链式代理仍然优先。
+  - DOMAIN-KEYWORD,schwab,🏦 Schwab
+  - DOMAIN-SUFFIX,schwab.com,🏦 Schwab
+  - DOMAIN-SUFFIX,schwabcdn.com,🏦 Schwab
+  - DOMAIN-SUFFIX,schwabcontent.com,🏦 Schwab
+  - DOMAIN-SUFFIX,schwabassetmanagement.com,🏦 Schwab
+  - DOMAIN-SUFFIX,tdameritrade.com,🏦 Schwab
+  - DOMAIN-SUFFIX,thinkorswim.com,🏦 Schwab
+  - DOMAIN-KEYWORD,binance,🪙 Crypto
+  - DOMAIN-KEYWORD,bnbstatic,🪙 Crypto
+  - DOMAIN-KEYWORD,bntrace,🪙 Crypto
+  - DOMAIN-KEYWORD,bnappzh,🪙 Crypto
+  - DOMAIN-KEYWORD,okx,🪙 Crypto
+  - DOMAIN-KEYWORD,okex,🪙 Crypto
+  - DOMAIN-KEYWORD,oklink,🪙 Crypto
+  - DOMAIN-KEYWORD,okcoin,🪙 Crypto
+  - DOMAIN-KEYWORD,bit.com,🪙 Crypto
+  - DOMAIN-KEYWORD,neverless,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.com,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.info,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.me,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.us,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.cloud,🪙 Crypto
+  - DOMAIN-SUFFIX,bnbstatic.com,🪙 Crypto
+  - DOMAIN-SUFFIX,bntrace.com,🪙 Crypto
+  - DOMAIN-SUFFIX,bnappzh.co,🪙 Crypto
+  - DOMAIN-SUFFIX,okex.com,🪙 Crypto
+  - DOMAIN-SUFFIX,oklink.com,🪙 Crypto
+  - DOMAIN-SUFFIX,okx.com,🪙 Crypto
+  - DOMAIN-SUFFIX,myokx.com,🪙 Crypto
+  - DOMAIN-SUFFIX,okx-dns.com,🪙 Crypto
+  - DOMAIN-SUFFIX,okxstatic.com,🪙 Crypto
+  - DOMAIN-SUFFIX,okxcdn.com,🪙 Crypto
+  - DOMAIN-SUFFIX,okcoin.com,🪙 Crypto
+  - DOMAIN-SUFFIX,bit.com,🪙 Crypto
+  - DOMAIN-SUFFIX,neverless.com,🪙 Crypto
+  - DOMAIN-SUFFIX,neverless.app,🪙 Crypto
+  - DOMAIN-SUFFIX,anthropic.com,OpenAI
+  - DOMAIN-SUFFIX,claude.ai,OpenAI
+  - DOMAIN-SUFFIX,claudeusercontent.com,OpenAI
+  - DOMAIN-SUFFIX,anthropic-ai.com,OpenAI
+  - DOMAIN-KEYWORD,anthropic,OpenAI
+  - DOMAIN-KEYWORD,claude,OpenAI
+  - DOMAIN-SUFFIX,gemini.google.com,OpenAI
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com,OpenAI
+  - DOMAIN-SUFFIX,ai.google.dev,OpenAI
+  - DOMAIN-SUFFIX,aistudio.google.com,OpenAI
+  - DOMAIN-SUFFIX,makersuite.google.com,OpenAI
+  - RULE-SET,OpenAI,OpenAI
+  - RULE-SET,Apple,Apple
+  - RULE-SET,BiliBili,BiliBili
+  - RULE-SET,Disney,Disney
+  - RULE-SET,Netflix,Netflix
+  - RULE-SET,Steam,Steam
+  - RULE-SET,SteamCN,DIRECT
+  - DOMAIN-SUFFIX,hsbc.co.uk,HSBC UK
+  - DOMAIN-SUFFIX,hsbc.uk,HSBC UK
+  - DOMAIN-SUFFIX,hsbc.com,HSBC UK
+  - DOMAIN-SUFFIX,hsbcnet.com,HSBC UK
+  - DOMAIN-SUFFIX,business.hsbc.uk,HSBC UK
+  - DOMAIN-SUFFIX,secure.hsbc.co.uk,HSBC UK
+  - DOMAIN-KEYWORD,hsbc,HSBC UK
+  - RULE-SET,PayPal,PayPal
+  - RULE-SET,Telegram,Telegram
+  - DOMAIN-SUFFIX,accounts.google.com,OpenAI
+  - DOMAIN-SUFFIX,googleapis.com,OpenAI
+  - RULE-SET,Google,Google
+  - RULE-SET,YouTube,Google
+  - RULE-SET,HBO,HBO
+  - RULE-SET,Microsoft,Microsoft
+  - RULE-SET,TikTok,TikTok
+  - RULE-SET,Bahamut,🇨🇳 Taiwan
+  - RULE-SET,DMM,🇯🇵 Japan
+  - RULE-SET,ChinaMax,DIRECT
+  - DOMAIN,local.adguard.org,DIRECT
+  - DOMAIN-SUFFIX,local,DIRECT
+  - IP-CIDR,127.0.0.0/8,DIRECT
+  - IP-CIDR,172.16.0.0/12,DIRECT
+  - IP-CIDR,192.168.0.0/16,DIRECT
+  - IP-CIDR,10.0.0.0/8,DIRECT
+  - IP-CIDR,17.0.0.0/8,DIRECT
+  - IP-CIDR,100.64.0.0/10,DIRECT
+  - IP-CIDR,224.0.0.0/4,DIRECT
+  - IP-CIDR,203.0.113.0/24,DIRECT
+  - IP-CIDR,192.0.2.0/24,DIRECT
+  - IP-CIDR6,fe80::/10,DIRECT
+  - GEOIP,CN,DIRECT
+  - GEOIP,LAN,DIRECT
+  - MATCH,SSRDOG
