@@ -1,0 +1,494 @@
+# ============================================================
+# Stash 覆写配置 — 基于 OpenClash smart.yaml 转换
+# 文件名必须为 .stoverride，Stash → 设置 → 覆写 → 导入
+# 每次更新订阅后覆写自动合并，保护自定义配置不被覆盖
+# ============================================================
+
+name: "路由覆写 （静态IP + 智能分流）"
+desc: "US 静态 IP 链式代理 + HSBC/iFAST/Crypto 专用策略组 + AI 服务路由 + 自定义规则"
+
+# ============================================================
+# 自定义代理（追加到订阅代理之前）
+# ============================================================
+proxies:
+  # 直连别名（兼容规则中的"直连"引用）
+  - name: "直连"
+    type: direct
+
+  # US 静态 IP SOCKS5 — 无 dialer-proxy，由 relay 组链式代理
+  - name: "US-SOCKS5-Raw"
+    type: socks5
+    server: 64.32.187.244
+    port: 443
+    username: "QsAGnasbSCym"
+    password: "RhK3h9xxi2"
+    udp: true
+    skip-cert-verify: true
+
+# ============================================================
+# 代理组（追加到订阅代理组之前，同名组覆写优先）
+# ============================================================
+proxy-groups:
+  # === 链式代理（relay 模式，iOS 网络切换不中断）===
+  - name: "🔗 US-Static-Chain"
+    type: relay
+    proxies:
+      - 🚀 默认代理
+      - US-SOCKS5-Raw
+
+  # === 主选择组 ===
+  - name: 🚀 默认代理
+    type: select
+    proxies:
+      - ♻️ 香港智能
+      - ♻️ 日本智能
+      - ♻️ 台湾自动选择
+      - ♻️ 美国智能
+      - ♻️ 加坡智能
+      - ♻️ 欧洲智能
+      - 🔯 香港故转
+      - 🔯 日本故转
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - 🇬🇧 英国节点
+      - 🇫🇷 法国节点
+      - 🌐 全部节点
+      - 直连
+
+  # === 功能策略组 ===
+  - name: 📹 YouTube
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  - name: 👨🏿‍💻 GitHub
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  - name: 🐬 OneDrive
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  - name: 🪟 Microsoft
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  - name: 🎵 TikTok
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  - name: 📲 Telegram
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  - name: 🎥 NETFLIX
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  - name: ✈️ Speedtest
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  - name: 💶 PayPal
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  # === AI 服务（链式静态 IP 优先）===
+  - name: 🤖 ChatGPT
+    type: select
+    proxies:
+      - "🔗 US-Static-Chain"
+      - US-SOCKS5-Raw
+      - 🚀 默认代理
+      - ♻️ 美国智能
+      - ♻️ 香港智能
+      - 🇺🇲 美国节点
+      - 直连
+
+  # === Google 服务（链式静态 IP 优先）===
+  - name: 🍀 Google
+    type: select
+    proxies:
+      - "🔗 US-Static-Chain"
+      - US-SOCKS5-Raw
+      - 🚀 默认代理
+      - ♻️ 美国智能
+      - ♻️ 香港智能
+      - 🇺🇲 美国节点
+      - 直连
+
+  # === 加密货币（台湾优先）===
+  - name: 🪙 Crypto
+    type: select
+    proxies:
+      - ♻️ 台湾自动选择
+      - 🇹🇼 台湾节点
+      - 🚀 默认代理
+      - 直连
+
+  # === Apple ===
+  - name: 🍎 Apple
+    type: select
+    proxies:
+      - 直连
+      - 🚀 默认代理
+
+  # === 银行 ===
+  - name: 🏦 HSBC
+    type: select
+    proxies:
+      - 🇬🇧 英国节点
+      - 🇭🇰 香港节点
+      - 🌐 全部节点
+      - 🚀 默认代理
+      - 直连
+
+  - name: 🏦 iFAST
+    type: select
+    proxies:
+      - 🇬🇧 英国节点
+      - 🇭🇰 香港节点
+      - ♻️ 加坡智能
+      - 🌐 全部节点
+      - 🚀 默认代理
+      - 直连
+
+  # === 直连组 ===
+  - name: 🎯 直连
+    type: select
+    proxies:
+      - 直连
+      - 🚀 默认代理
+
+  # === 兜底 ===
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies: [🚀 默认代理, ♻️ 香港智能, ♻️ 日本智能, ♻️ 台湾自动选择, ♻️ 美国智能, ♻️ 加坡智能, ♻️ 欧洲智能, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🌐 全部节点, 直连]
+
+  # === 节点筛选组（按地区过滤订阅节点）===
+  - name: 🇭🇰 香港节点
+    type: select
+    include-all: true
+    filter: "(?i)港|hk|hongkong|hong kong"
+
+  - name: 🇯🇵 日本节点
+    type: select
+    include-all: true
+    filter: "(?i)日|jp|japan"
+
+  - name: 🇹🇼 台湾节点
+    type: select
+    include-all: true
+    filter: "(?i)台|tw|taiwan"
+
+  - name: 🇺🇲 美国节点
+    type: select
+    include-all: true
+    filter: "(?i)美|us|unitedstates|united states"
+
+  - name: 🇬🇧 英国节点
+    type: select
+    include-all: true
+    filter: "(?=.*(英国|UK|(?i)Britain|British))^((?!(港|台|日|韩|美|新|欧)).)*$"
+
+  - name: 🇫🇷 法国节点
+    type: select
+    include-all: true
+    filter: "(?i)fr|france|french|paris"
+
+  # === 自动测速 / 故障转移组 ===
+  - name: 🔯 香港故转
+    type: fallback
+    include-all: true
+    interval: 300
+    filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"
+
+  - name: 🔯 日本故转
+    type: fallback
+    include-all: true
+    interval: 300
+    filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"
+
+  - name: ♻️ 香港智能
+    type: url-test
+    include-all: true
+    interval: 300
+    filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"
+
+  - name: ♻️ 日本智能
+    type: url-test
+    include-all: true
+    interval: 300
+    filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"
+
+  - name: ♻️ 台湾自动选择
+    type: url-test
+    include-all: true
+    interval: 300
+    filter: "(?i)台|tw|taiwan"
+
+  - name: ♻️ 美国智能
+    type: url-test
+    include-all: true
+    interval: 300
+    filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|日|韩|新)).)*$"
+
+  - name: ♻️ 加坡智能
+    type: url-test
+    include-all: true
+    interval: 300
+    filter: "(?=.*(新|SG|(?i)SG|Singapore))^((?!(港|台|日|韩|美)).)*$"
+
+  - name: ♻️ 欧洲智能
+    type: url-test
+    include-all: true
+    interval: 300
+    filter: "(?=.*(Great Britain|(?i)France|Italy|Kazakhstan|Germany|Kingdom|Turkey|Switzerland|Netherlands))^((?!(港|台|日|韩|美|新|台)).)*$"
+
+  - name: ♻️ 自动选择
+    type: url-test
+    include-all: true
+    interval: 300
+    filter: "^((?!(直连)).)*$"
+
+  - name: 🌐 全部节点
+    type: select
+    include-all: true
+
+# ============================================================
+# 规则（追加到订阅规则之前，优先级更高）
+# ============================================================
+rules:
+  # === 汇丰银行 ===
+  - DOMAIN-SUFFIX,hsbc.co.uk,🏦 HSBC
+  - DOMAIN-SUFFIX,hsbc.com,🏦 HSBC
+  - DOMAIN-SUFFIX,hsbc.uk,🏦 HSBC
+  - DOMAIN-SUFFIX,firstdirect.com,🏦 HSBC
+  - DOMAIN-SUFFIX,hsbcnet.com,🏦 HSBC
+  - DOMAIN-SUFFIX,hsbcprivatebank.com,🏦 HSBC
+  - DOMAIN-SUFFIX,hsbcinnovationbanking.com,🏦 HSBC
+  - DOMAIN,global.hsbc,🏦 HSBC
+  - DOMAIN-KEYWORD,hsbc,🏦 HSBC
+
+  # === iFAST 银行 ===
+  - DOMAIN-SUFFIX,ifastgb.com,🏦 iFAST
+  - DOMAIN-SUFFIX,ifastfinancial.com,🏦 iFAST
+  - DOMAIN-SUFFIX,ifastcorp.com,🏦 iFAST
+  - DOMAIN-KEYWORD,ifast,🏦 iFAST
+
+  # === 蔚来（直连）===
+  - DOMAIN-SUFFIX,nio.com,🎯 直连
+  - DOMAIN-SUFFIX,nio.cn,🎯 直连
+  - DOMAIN-SUFFIX,nios.com,🎯 直连
+
+  # === 特定站点 ===
+  - DOMAIN-SUFFIX,jkforum.net,♻️ 台湾自动选择
+  - DOMAIN-SUFFIX,supjav.com,♻️ 台湾自动选择
+
+  # === 加密货币（KEYWORD 在 SUFFIX 之前，防止 CDN/CNAME 漏匹配）===
+  - DOMAIN-KEYWORD,binance,🪙 Crypto
+  - DOMAIN-KEYWORD,bnbstatic,🪙 Crypto
+  - DOMAIN-KEYWORD,bntrace,🪙 Crypto
+  - DOMAIN-KEYWORD,bnappzh,🪙 Crypto
+  - DOMAIN-KEYWORD,okx,🪙 Crypto
+  - DOMAIN-KEYWORD,oklink,🪙 Crypto
+  - DOMAIN-KEYWORD,okcoin,🪙 Crypto
+  - DOMAIN-KEYWORD,bit.com,🪙 Crypto
+  - DOMAIN-KEYWORD,neverless,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.com,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.info,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.me,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.us,🪙 Crypto
+  - DOMAIN-SUFFIX,binance.cloud,🪙 Crypto
+  - DOMAIN-SUFFIX,bnbstatic.com,🪙 Crypto
+  - DOMAIN-SUFFIX,bntrace.com,🪙 Crypto
+  - DOMAIN-SUFFIX,bnappzh.co,🪙 Crypto
+  - DOMAIN-SUFFIX,okx.com,🪙 Crypto
+  - DOMAIN-SUFFIX,myokx.com,🪙 Crypto
+  - DOMAIN-SUFFIX,okx-dns.com,🪙 Crypto
+  - DOMAIN-SUFFIX,okxstatic.com,🪙 Crypto
+  - DOMAIN-SUFFIX,okxcdn.com,🪙 Crypto
+  - DOMAIN-SUFFIX,oklink.com,🪙 Crypto
+  - DOMAIN-SUFFIX,okcoin.com,🪙 Crypto
+  - DOMAIN-SUFFIX,bit.com,🪙 Crypto
+  - DOMAIN-SUFFIX,neverless.com,🪙 Crypto
+  - DOMAIN-SUFFIX,neverless.app,🪙 Crypto
+
+  # === AI 服务路由 ===
+  # Claude/Anthropic + Google OAuth → 走链式静态 IP
+  - DOMAIN-SUFFIX,claude.ai,🤖 ChatGPT
+  - DOMAIN-SUFFIX,anthropic.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,accounts.google.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,googleapis.com,🤖 ChatGPT
+  # Gemini → Google 组（灵活，不强制静态 IP）
+  - DOMAIN-SUFFIX,gemini.google.com,🍀 Google
+  - DOMAIN-SUFFIX,aistudio.google.com,🍀 Google
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com,🍀 Google
+  - DOMAIN-SUFFIX,notebooklm.google.com,🍀 Google
+  - DOMAIN-SUFFIX,ai.google.dev,🍀 Google
+  - DOMAIN-SUFFIX,makersuite.google.com,🍀 Google
+  # AI 规则集（必须在 Gemini 规则之后）
+  - RULE-SET,ai,🤖 ChatGPT
+
+  # === 自定义域名 ===
+  - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
+  - DOMAIN-SUFFIX,zhenkaixin.uk,直连
+
+  # === 规则集（按优先级排列）===
+  - RULE-SET,private_domain,直连
+  - RULE-SET,apple_domain,🍎 Apple
+  - RULE-SET,proxylite,🚀 默认代理
+  - RULE-SET,google_domain,🍀 Google
+  - RULE-SET,github_domain,👨🏿‍💻 GitHub
+  - RULE-SET,youtube_domain,📹 YouTube
+  - RULE-SET,onedrive_domain,🐬 OneDrive
+  - RULE-SET,microsoft_domain,🪟 Microsoft
+  - RULE-SET,tiktok_domain,🎵 TikTok
+  - RULE-SET,speedtest_domain,✈️ Speedtest
+  - RULE-SET,telegram_domain,📲 Telegram
+  - RULE-SET,netflix_domain,🎥 NETFLIX
+  - RULE-SET,paypal_domain,💶 PayPal
+  - RULE-SET,gfw_domain,🚀 默认代理
+  - RULE-SET,geolocation-!cn,🚀 默认代理
+  - RULE-SET,cn_domain,🎯 直连
+
+  # === IP 规则（no-resolve 防止 DNS 泄露）===
+  - RULE-SET,google_ip,🍀 Google,no-resolve
+  - RULE-SET,netflix_ip,🎥 NETFLIX,no-resolve
+  - RULE-SET,telegram_ip,📲 Telegram,no-resolve
+  - RULE-SET,cn_ip,🎯 直连
+
+  # === 兜底 ===
+  - MATCH,🐟 漏网之鱼
+
+# ============================================================
+# 规则集（与订阅规则集合并）
+# Stash 支持格式: domain / ipcidr / classical × yaml / text / mrs
+# ============================================================
+rule-providers:
+  private_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"
+    interval: 86400
+
+  proxylite:
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/BroCepage/BroCepage/refs/heads/main/ProxyLite.list"
+    interval: 86400
+
+  ai:
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-!cn.mrs"
+    interval: 86400
+
+  youtube_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"
+    interval: 86400
+
+  google_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"
+    interval: 86400
+
+  github_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"
+    interval: 86400
+
+  telegram_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"
+    interval: 86400
+
+  netflix_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/netflix.mrs"
+    interval: 86400
+
+  paypal_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/paypal.mrs"
+    interval: 86400
+
+  onedrive_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.mrs"
+    interval: 86400
+
+  microsoft_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"
+    interval: 86400
+
+  apple_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-cn.mrs"
+    interval: 86400
+
+  speedtest_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ookla-speedtest.mrs"
+    interval: 86400
+
+  tiktok_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs"
+    interval: 86400
+
+  gfw_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/gfw.mrs"
+    interval: 86400
+
+  geolocation-!cn:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"
+    interval: 86400
+
+  cn_domain:
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"
+    interval: 86400
+
+  cn_ip:
+    behavior: ipcidr
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"
+    interval: 86400
+
+  google_ip:
+    behavior: ipcidr
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"
+    interval: 86400
+
+  telegram_ip:
+    behavior: ipcidr
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"
+    interval: 86400
+
+  netflix_ip:
+    behavior: ipcidr
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/netflix.mrs"
+    interval: 86400
