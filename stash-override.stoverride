@@ -22,7 +22,7 @@ proxies:
     port: 443
     username: "QsAGnasbSCym"
     password: "RhK3h9xxi2"
-    udp: true
+    udp: false
     skip-cert-verify: true
 
 # ============================================================
